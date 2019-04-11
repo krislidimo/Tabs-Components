@@ -44,14 +44,34 @@ class TabItem {
   select() {
     // Select all ".tabs-item" elements from the DOM
     const items = document.querySelectorAll('.tabs-item');
+    let oldItem = document.querySelector('.tabs-item.tabs-item-selected');
+    
+    this.animateContentOut(oldItem, items);
+  }
 
-    // Remove the class "tabs-item-selected" from each element
-    Array.from(items).forEach( item => {
-      item.classList.remove('tabs-item-selected')
-    })
+  animateContentOut(oldItem, items) {
+    TweenMax.to(oldItem, .5, {
+      x:20,
+      opacity:0,
+      onComplete: () => {
+        // Remove the class "tabs-item-selected" from each element
+        Array.from(items).forEach( item => {item.classList.remove('tabs-item-selected')});
+        TweenMax.to(oldItem, 0.1, {x:0,opacity:1});
+        this.animateContentIn(this.element);
+      },
+    });
+  }
 
-    // Add a class named "tabs-item-selected" to this element
-    this.element.classList.toggle('tabs-item-selected');
+  animateContentIn(element) {
+    TweenMax.from(element, .5, {
+          x:-20,
+          opacity: 0,
+          ease:Back.easeout,
+          onStart: () => {
+            // Add a class named "tabs-item-selected" to this element
+            element.classList.toggle('tabs-item-selected');
+          },
+        });
   }
 }
 
